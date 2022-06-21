@@ -53,16 +53,9 @@ for ip in range(len(program)):
         ip += 1
     elif code.startswith('"'):
         str_stack.append(program[ip]) 
-        while not code.endswith('"'):
-            # print(str_stack)
-            str_stack.append(program[ip])
-            print(str_stack)
-            if code.endswith('"'):
-                ip += 1
-            ip += 1
         ip += 1
     elif code.endswith('"'):
-        a = "".join(str_stack)
+        a = " ".join(str_stack)
             # a = str_stack.pop()
         stack.append(a)
         print("Stack reached here.")
