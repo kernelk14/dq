@@ -64,5 +64,8 @@ for ip in range(len(program)):
     else:
         print(f"Unknown token `{program[ip]}` in pos {ip}")
         if program[ip].endswith('"'):
-            print("FIXME: Maybe you forgot to pass it as a string?")
+            if not program[ip].startswith('"'):
+                print("FIXME: Maybe you forgot to pass it as a string?")
+            else:
+                raise RuntimeError("You need to implement a way to recognize strings.")
     ip += 1
