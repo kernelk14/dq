@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pypy3
 import os
 from collections import deque
 import sys
@@ -17,19 +17,19 @@ tok = {}
 file = open(prog, 'r')
 reader = file.read()
 
+tokens = ['write', '+', '-', '"']
+# print(str(tokens))
 program = [word
     for line in reader.splitlines()
     if not line.lstrip().startswith('//')
     for word in line.split(None)
     if len(word) > 0]
-
 # print(program)
-
 for ip in range(len(program)):
     code = program[ip]
     # print(f"Main Stack: {stack}")
     # print(f"String Stack: {str_stack}")
-    #print(dir(code))
+    # print(dir(code))
     # print(f"{ip}: {program[ip]}")
     if code.isdigit():
         stack.append(code)
@@ -40,11 +40,16 @@ for ip in range(len(program)):
         b = stack.pop()
         stack.append(int(a) + int(b))
         ip += 1
+    
         # print(stack)
     elif code == 'write':
-        a = stack.pop()
-        print(a)
-        ip += 1
+        tok[ip] = code
+        if stack.count == 0:
+            raise IndexError("You are popping from an empty deque.")
+        else:
+            a = stack.pop()
+            print(a)
+            ip += 1
          #print(stack)
     elif code == '-':
         a = stack.pop()
@@ -52,7 +57,17 @@ for ip in range(len(program)):
         stack.append(int(a) - int(b))
         ip += 1
     elif code.startswith('"'):
-        str_stack.append(program[ip]) 
+        str_stack.append(program[ip])
+        while not code.endswith('"'):
+            try:
+                str_stack.append(program[ip])
+                ip += 1
+                if code.endswith('"'):
+                    a = " ".join(str_stack)
+                    stack.append(a)
+            except IndexError:
+                raise RuntimeError("You are calling to an empty deque")
+            ip += 1
         ip += 1
     elif code.endswith('"'):
         a = " ".join(str_stack)
