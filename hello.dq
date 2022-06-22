@@ -3,4 +3,4 @@
 
 100 write
 
-"Hello" write
+0x6869 hwrite

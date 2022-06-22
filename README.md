@@ -17,7 +17,11 @@ Add numbers:
 Subtract numbers:
 `6 5 - write`
 
+Print hex values:
+`0x6869 hwrite`
 # Language Plans
-+ Conpiled
++ Compiled
+  - To native code
+  - To other compiled language
 + Readability
 + String parsing

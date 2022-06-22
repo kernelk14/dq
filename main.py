@@ -44,13 +44,27 @@ for ip in range(len(program)):
         # print(stack)
     elif code == 'write':
         tok[ip] = code
-        if stack.count == 0:
-            raise IndexError("You are popping from an empty deque.")
-        else:
-            a = stack.pop()
-            print(a)
-            ip += 1
+        try:
+            if stack.count == 0:
+                raise IndexError("You are popping from an empty deque.")
+            else:
+                a = stack.pop()
+                print(a)
+        except IndexError:
+            raise RuntimeError("ERROR: You are writing nothing")
+            # exit(1)
+        ip += 1
          #print(stack)
+    elif code == 'hwrite':
+        try:
+            a = stack.pop()[2:]
+            bo = bytes.fromhex(a)
+            a_s = bo.decode('ASCII')
+            print(a_s)
+        except IndexError:
+            raise RuntimeError("ERROR: You are writing nothing")
+            # exit(1)
+        ip += 1
     elif code == '-':
         a = stack.pop()
         b = stack.pop()
@@ -75,6 +89,11 @@ for ip in range(len(program)):
         stack.append(a)
         print("Stack reached here.")
         print(f"Main Stack: {stack}")
+        ip += 1
+    # Introduce Binaries
+    elif code.startswith('0x'):
+         #print("warning: parsing a binary.")
+        stack.append(code)
         ip += 1
     else:
         print(f"Unknown token `{program[ip]}` in pos {ip}")
