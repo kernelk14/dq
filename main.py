@@ -27,10 +27,6 @@ program = [word
 # print(program)
 for ip in range(len(program)):
     code = program[ip]
-    # print(f"Main Stack: {stack}")
-    # print(f"String Stack: {str_stack}")
-    # print(dir(code))
-    # print(f"{ip}: {program[ip]}")
     if code.isdigit():
         stack.append(code)
         ip += 1
@@ -40,7 +36,6 @@ for ip in range(len(program)):
         b = stack.pop()
         stack.append(int(a) + int(b))
         ip += 1
-    
         # print(stack)
     elif code == 'write':
         tok[ip] = code
@@ -90,9 +85,12 @@ for ip in range(len(program)):
         print("Stack reached here.")
         print(f"Main Stack: {stack}")
         ip += 1
-    # Introduce Binaries
+    # Introduce Hexadecimals
     elif code.startswith('0x'):
-         #print("warning: parsing a binary.")
+         #print("warning: parsing a hexadecimal.")
+        stack.append(code)
+        ip += 1
+    elif code.startswith('0b'):
         stack.append(code)
         ip += 1
     else:
