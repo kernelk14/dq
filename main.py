@@ -25,13 +25,13 @@ program = [
     for word in line.split(' ') if len(word) > 0
 ]
 # print(program)
-for ip in range(len(program)):
-    word = program[ip]
-    if word.endswith(':'):
-        word = word[:-1]
-        if word in lab:
-            raise RuntimeError(f"Label `{word}` already defined")
-        lab[ip] = word
+# for ip in range(len(program)):
+#     word = program[ip]
+#     if word.endswith(':'):
+#         word = word[:-1]
+#         if word in lab:
+#             raise RuntimeError(f"Label `{word}` already defined")
+#         lab[ip] = word
 # while ip < len(program):
 ip = 0
 # while ip < len(program):
