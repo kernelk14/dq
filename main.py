@@ -20,11 +20,10 @@ reader = file.read()
 
 tokens = ['write', '+', '-', '"']
 # print(str(tokens))
-program = [word
-    for line in reader.splitlines()
-    if not line.lstrip().startswith('#')
-    for word in line.split(' ')
-    if len(word) > 0]
+program = [
+    word for line in reader.splitlines() if not line.lstrip().startswith('#')
+    for word in line.split(' ') if len(word) > 0
+]
 # print(program)
 for ip in range(len(program)):
     word = program[ip]
@@ -35,7 +34,8 @@ for ip in range(len(program)):
         lab[ip] = word
 # while ip < len(program):
 ip = 0
-while ip < len(program):
+# while ip < len(program):
+for ip in range(len(program)):
     code = program[ip]
     if code.endswith(':'):
         # print(f"Deque Values: {stack}")
@@ -60,11 +60,12 @@ while ip < len(program):
         # print(stack)
     elif code == '+':
         try:
+            # print(stack)
             a = stack.pop()
             b = stack.pop()
-            stack.append(a + b)
-        except IndexError:
-            print(f"Instruction `{code}`")
+            stack.append(int(a) + int(b))
+        except IndexError as e:
+            print(f"ERROR: Instruction `{code}`, {e}")
         ip += 1
         # print(stack)
     elif code == 'write':
@@ -79,7 +80,7 @@ while ip < len(program):
             raise RuntimeError("ERROR: You are writing nothing")
             # exit(1)
         ip += 1
-         #print(stack)
+        #print(stack)
     elif code == 'hwrite':
         try:
             a = stack.pop()[2:]
@@ -92,11 +93,12 @@ while ip < len(program):
         ip += 1
     elif code == '-':
         try:
+            # print(stack)
             a = stack.pop()
             b = stack.pop()
-            stack.append(a - b)
-        except IndexError:
-            print(f"Instruction `{code}`")
+            stack.append(int(a) - int(b))
+        except IndexError as e:
+            print(f"ERROR: Instruction `{code}`, {e}")
         ip += 1
     elif code == 'goto':
         print(f"Label Stack: {lab_stack}")
@@ -110,7 +112,11 @@ while ip < len(program):
             ip += 1
             exit(1)
         ip += 1
-    
+    elif code == '*':
+        a = stack.pop()
+        b = stack.pop()
+        stack.append(int(a) * int(b))
+        ip += 1
     elif code.startswith('"'):
         str_stack.append(program[ip])
         while not code.endswith('"'):
@@ -124,31 +130,26 @@ while ip < len(program):
                 raise RuntimeError("You are calling to an empty deque")
             ip += 1
         ip += 1
-            # print(tok)
+        # print(tok)
     elif code.endswith('"'):
         a = " ".join(str_stack)
-            # a = str_stack.pop()
+        # a = str_stack.pop()
         stack.append(a)
         print("Stack reached here.")
         print(f"Main Stack: {stack}")
         ip += 1
     # Introduce Hexadecimals
     elif code.startswith('0x'):
-         #print("warning: parsing a hexadecimal.")
+        #print("warning: parsing a hexadecimal.")
         stack.append(code)
         ip += 1
     # print(f"Label IP: {lab[ip]}")
-    
+
     elif code.startswith('0b'):
         stack.append(code)
         ip += 1
-    elif code == lab[code]:
-        # print(calling_lab)
-        try:
-            print(True)
-            ip = lab[ip]
-        except KeyError:
-            print(f"ERROR: in pos {ip}:\n\tOh no, maybe the lexer thinks that this is a label.")
+    elif code == 'drop':
+        stack.pop()
         ip += 1
     else:
         try:
@@ -158,7 +159,7 @@ while ip < len(program):
         except ValueError:
             stack.append(int(code))
         ip += 1
-    ip += 1 
+    ip += 1
 # while ip < len(program):
 #     word = program[ip]
 #     if word.endswith(':'):
