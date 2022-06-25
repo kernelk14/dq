@@ -5,3 +5,7 @@
 
 0x6869 hwrite
 0x6869 hwrite
+
+loop: 20 write loop goto
+
+loop goto

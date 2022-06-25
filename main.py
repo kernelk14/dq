@@ -8,11 +8,12 @@ if len(sys.argv) < 2:
     exit(1)
 prog = sys.argv[1]
 
-ip = 0
 # prog = "5 6 + write 10 11 - write"
 stack = deque()
 str_stack = deque()
+lab_stack = deque()
 tok = {}
+lab = {}
 
 file = open(prog, 'r')
 reader = file.read()
@@ -21,20 +22,49 @@ tokens = ['write', '+', '-', '"']
 # print(str(tokens))
 program = [word
     for line in reader.splitlines()
-    if not line.lstrip().startswith('//')
-    for word in line.split(None)
+    if not line.lstrip().startswith('#')
+    for word in line.split(' ')
     if len(word) > 0]
 # print(program)
 for ip in range(len(program)):
+    word = program[ip]
+    if word.endswith(':'):
+        word = word[:-1]
+        if word in lab:
+            raise RuntimeError(f"Label `{word}` already defined")
+        lab[ip] = word
+# while ip < len(program):
+ip = 0
+while ip < len(program):
     code = program[ip]
-    if code.isdigit():
+    if code.endswith(':'):
+        # print(f"Deque Values: {stack}")
+        assert code.endswith(':')
+        # code = code[:-1]
+        # print(f"label: {code}")
+        if code in lab:
+            raise RuntimeError(f"Label {code} is already defined")
+            # ip += 1
+        code = code[:-1]
+        lab[code] = ip
+        lab_stack.append(lab[code])
+        # calling_lab = lab[code]
+        print(f"Labels: {lab}")
+        print(f"Label Stack: {lab_stack}")
+        ip += 1
+    # print(stack)
+    # print(program)
+    elif code.isdigit():
         stack.append(code)
         ip += 1
         # print(stack)
     elif code == '+':
-        a = stack.pop()
-        b = stack.pop()
-        stack.append(int(a) + int(b))
+        try:
+            a = stack.pop()
+            b = stack.pop()
+            stack.append(a + b)
+        except IndexError:
+            print(f"Instruction `{code}`")
         ip += 1
         # print(stack)
     elif code == 'write':
@@ -61,10 +91,26 @@ for ip in range(len(program)):
             # exit(1)
         ip += 1
     elif code == '-':
-        a = stack.pop()
-        b = stack.pop()
-        stack.append(int(a) - int(b))
+        try:
+            a = stack.pop()
+            b = stack.pop()
+            stack.append(a - b)
+        except IndexError:
+            print(f"Instruction `{code}`")
         ip += 1
+    elif code == 'goto':
+        print(f"Label Stack: {lab_stack}")
+        try:
+            a = lab_stack.pop()
+            ip = a
+            print(f"Next label definition is located in pos {ip}")
+            lab_stack.append(a)
+        except IndexError as e:
+            print(f"ERROR: instruction `{code}` in pos {ip}: {e}")
+            ip += 1
+            exit(1)
+        ip += 1
+    
     elif code.startswith('"'):
         str_stack.append(program[ip])
         while not code.endswith('"'):
@@ -78,6 +124,7 @@ for ip in range(len(program)):
                 raise RuntimeError("You are calling to an empty deque")
             ip += 1
         ip += 1
+            # print(tok)
     elif code.endswith('"'):
         a = " ".join(str_stack)
             # a = str_stack.pop()
@@ -90,14 +137,30 @@ for ip in range(len(program)):
          #print("warning: parsing a hexadecimal.")
         stack.append(code)
         ip += 1
+    # print(f"Label IP: {lab[ip]}")
+    
     elif code.startswith('0b'):
         stack.append(code)
         ip += 1
+    elif code == lab[code]:
+        # print(calling_lab)
+        try:
+            print(True)
+            ip = lab[ip]
+        except KeyError:
+            print(f"ERROR: in pos {ip}:\n\tOh no, maybe the lexer thinks that this is a label.")
+        ip += 1
     else:
-        print(f"Unknown token `{program[ip]}` in pos {ip}")
-        if program[ip].endswith('"'):
-            if not program[ip].startswith('"'):
-                print("FIXME: Maybe you forgot to pass it as a string?")
-            else:
-                raise RuntimeError("You need to implement a way to recognize strings.")
-    ip += 1
+        try:
+            if code == lab[code]:
+                ip += 1
+                continue
+        except ValueError:
+            stack.append(int(code))
+        ip += 1
+    ip += 1 
+# while ip < len(program):
+#     word = program[ip]
+#     if word.endswith(':'):
+#         ip += 1
+#        continue
