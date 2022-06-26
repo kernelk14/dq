@@ -161,13 +161,43 @@ def interpret(program):
                 stack.append(int(code))
             ip += 1
         ip += 1
+p = os.path.splitext(prog)
+out_file_path = p[0] + '.cpp'
+out = open(out_file_path, 'w')
+def com(program):    
+    ip = 0
+    out.write("#include <iostream>\n")
+    out.write("int main(void) {\n")
+    for ip in range(len(program)): 
+        code = program[ip]
+        if code == 'write':
+            a = stack.pop()
+            out.write(f"std::cout << {a} << std::endl;\n")
+            print(f"`{code}`: Write Completed.")
+            ip += 1
+        elif code == '+':
+            a = stack.pop()
+            b = stack.pop()
+            stack.append(int(a) + int(b))
+            print(f"`{code}`: Added objects inside the stack.")
+            # out.write(f"std::cout << {int(a)} + {int(b)} << endl;\n")
+            ip += 1
+        elif code == '-':
+            a = stack.pop()
+            b = stack.pop()
+            stack.append(a - b)
+            print(f"`{code}`: Subtracting objects inside the stack.")
+        else:
+            stack.append(int(code))
+            print(f"`{code}`: Stack Updated.")
+            print(stack)
+            ip += 1
+        ip += 1
+    out.write("}\n")
+    # assert False, "Compiling programs not implemented."
 
-def com(program):
-    # ip = 0
-    # for ip in range(len(program)):
-    assert False, "Compiling programs not implemented."
-
-interpret(program)
+com(program)
+# interpret(program)
 # while ip < len(program):
 #     word = program[ip]
 #     if word.endswith(':'):
