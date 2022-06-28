@@ -2,11 +2,8 @@
 import os
 from collections import deque
 import sys
+import getopt
 
-if len(sys.argv) < 2:
-    print("ERROR: No file specified")
-    exit(1)
-prog = sys.argv[1]
 
 # prog = "5 6 + write 10 11 - write"
 stack = deque()
@@ -244,7 +241,44 @@ def com(program):
     out.write("}\n")
     # assert False, "Compiling programs not implemented."
 
-com(program)
+def usage(program):
+    print("./main.py [args] <filename>")
+opts = "ci:hv"
+long_opts = ["compile", "interpret", "help", "version"]
+argList = [1:]
+try:
+    if len(sys.argv) < 2:
+    print("ERROR: No file specified")
+    exit(1)
+    # prog = sys.argv[1]
+    args, vals = getopt.getopt(argList, opts, long_opts)
+    for currentArgument, currentValue in args:
+        if currentArgument in ("-c", "--compile"):
+            try:
+                prog = sys.argv[2]
+                com(prog)
+            except IndexError as e:
+                print(e)
+                print("ERROR: No filename given")
+                exit(1)
+        elif currentArgument in ("-i", "--interpret"):
+            try:
+                prog = sys.argv[2]
+                sim_prog(prog)
+            except IndexError as e:
+                print(e)
+                print("ERROR: No filename given")
+                exit(1) 
+        elif currentArgument in ("-h", "--help"):
+            usage()
+            exit(0)
+        elif currentArgument in ("-v", "--version"):
+            print(f"Slug Programming Language, version {VERSION}\n")
+            exit(1)
+except getopt.error as err:
+    print(str(err))
+usage(program)
+# com(program)
 # interpret(program)
 # while ip < len(program):
 #     word = program[ip]
