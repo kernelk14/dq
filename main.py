@@ -245,7 +245,7 @@ def usage(program):
     print("./main.py [args] <filename>")
 opts = "ci:hv"
 long_opts = ["compile", "interpret", "help", "version"]
-argList = [1:]
+argList = sys.argv[1:]
 try:
     if len(sys.argv) < 2:
     print("ERROR: No file specified")
