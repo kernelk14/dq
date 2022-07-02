@@ -11,16 +11,32 @@ str_stack = deque()
 lab_stack = deque()
 tok = {}
 lab = {}
+if len(sys.argv) < 2:
+    print("ERROR: No file specified")
+prog = sys.argv[1]
 
 file = open(prog, 'r')
 reader = file.read()
 
 tokens = ['write', '+', '-', '"']
-# print(str(tokens))
+
 program = [
     word for line in reader.splitlines() if not line.lstrip().startswith('#')
     for word in line.split(' ') if len(word) > 0
 ]
+p = os.path.splitext(prog)
+out_file_path = p[0] + '.cpp'
+out = open(out_file_path, 'w')
+#prog = sys.argv[2]
+# file = open(prog, 'r')
+# reader = file.read()
+
+ #tokens = ['write', '+', '-', '"']
+# print(str(tokens))
+# program = [
+#     word for line in reader.splitlines() if not line.lstrip().startswith('#')
+#     for word in line.split(' ') if len(word) > 0
+# ]
 # print(program)
 # for ip in range(len(program)):
 #     word = program[ip]
@@ -158,9 +174,7 @@ def interpret(program):
                 stack.append(int(code))
             ip += 1
         ip += 1
-p = os.path.splitext(prog)
-out_file_path = p[0] + '.cpp'
-out = open(out_file_path, 'w')
+
 def com(program):    
     ip = 0
     out.write("#include <iostream>\n")
@@ -237,51 +251,11 @@ def com(program):
                 ip += 1
             # ip += 1
         # ip += 1
+    print(stack)
     ip += 1
     out.write("}\n")
     # assert False, "Compiling programs not implemented."
 
-def usage(program):
+def usage():
     print("./main.py [args] <filename>")
-opts = "ci:hv"
-long_opts = ["compile", "interpret", "help", "version"]
-argList = sys.argv[1:]
-try:
-    if len(sys.argv) < 2:
-    print("ERROR: No file specified")
-    exit(1)
-    # prog = sys.argv[1]
-    args, vals = getopt.getopt(argList, opts, long_opts)
-    for currentArgument, currentValue in args:
-        if currentArgument in ("-c", "--compile"):
-            try:
-                prog = sys.argv[2]
-                com(prog)
-            except IndexError as e:
-                print(e)
-                print("ERROR: No filename given")
-                exit(1)
-        elif currentArgument in ("-i", "--interpret"):
-            try:
-                prog = sys.argv[2]
-                sim_prog(prog)
-            except IndexError as e:
-                print(e)
-                print("ERROR: No filename given")
-                exit(1) 
-        elif currentArgument in ("-h", "--help"):
-            usage()
-            exit(0)
-        elif currentArgument in ("-v", "--version"):
-            print(f"Slug Programming Language, version {VERSION}\n")
-            exit(1)
-except getopt.error as err:
-    print(str(err))
-usage(program)
-# com(program)
-# interpret(program)
-# while ip < len(program):
-#     word = program[ip]
-#     if word.endswith(':'):
-#         ip += 1
-#        continue
+com(program)
