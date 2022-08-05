@@ -2,11 +2,8 @@
 import os
 from collections import deque
 import sys
+import getopt
 
-if len(sys.argv) < 2:
-    print("ERROR: No file specified")
-    exit(1)
-prog = sys.argv[1]
 
 # prog = "5 6 + write 10 11 - write"
 stack = deque()
@@ -14,16 +11,32 @@ str_stack = deque()
 lab_stack = deque()
 tok = {}
 lab = {}
+if len(sys.argv) < 2:
+    print("ERROR: No file specified")
+prog = sys.argv[1]
 
 file = open(prog, 'r')
 reader = file.read()
 
 tokens = ['write', '+', '-', '"']
-# print(str(tokens))
+
 program = [
     word for line in reader.splitlines() if not line.lstrip().startswith('#')
     for word in line.split(' ') if len(word) > 0
 ]
+p = os.path.splitext(prog)
+out_file_path = p[0] + '.cpp'
+out = open(out_file_path, 'w')
+#prog = sys.argv[2]
+# file = open(prog, 'r')
+# reader = file.read()
+
+ #tokens = ['write', '+', '-', '"']
+# print(str(tokens))
+# program = [
+#     word for line in reader.splitlines() if not line.lstrip().startswith('#')
+#     for word in line.split(' ') if len(word) > 0
+# ]
 # print(program)
 # for ip in range(len(program)):
 #     word = program[ip]
@@ -161,9 +174,7 @@ def interpret(program):
                 stack.append(int(code))
             ip += 1
         ip += 1
-p = os.path.splitext(prog)
-out_file_path = p[0] + '.cpp'
-out = open(out_file_path, 'w')
+
 def com(program):    
     ip = 0
     out.write("#include <iostream>\n")
@@ -240,9 +251,11 @@ def com(program):
                 ip += 1
             # ip += 1
         # ip += 1
+    print(stack)
     ip += 1
     out.write("}\n")
     # assert False, "Compiling programs not implemented."
+
 # TODO: Find way to parse arguments.
 com(program)
 # interpret(program)
@@ -251,3 +264,8 @@ com(program)
 #     if word.endswith(':'):
 #         ip += 1
 #        continue
+=======
+
+def usage():
+    print("./main.py [args] <filename>")
+com(program)
