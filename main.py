@@ -243,7 +243,7 @@ def com(program):
     ip += 1
     out.write("}\n")
     # assert False, "Compiling programs not implemented."
-
+# TODO: Find way to parse arguments.
 com(program)
 # interpret(program)
 # while ip < len(program):
