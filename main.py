@@ -257,6 +257,7 @@ def com(program):
     # assert False, "Compiling programs not implemented."
 
 # TODO: Find way to parse arguments.
+
 com(program)
 # interpret(program)
 # while ip < len(program):
@@ -264,7 +265,6 @@ com(program)
 #     if word.endswith(':'):
 #         ip += 1
 #        continue
-=======
 
 def usage():
     print("./main.py [args] <filename>")
